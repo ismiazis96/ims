@@ -88,7 +88,7 @@ pipeline {
     success {
       // (Opsional) email – pastikan SMTP sudah dikonfigurasi
       // emailext subject: "OK: JMeter build #${env.BUILD_NUMBER}",
-      //          to: 'team-qa@example.com',
+      //          to: 'team-qa@example.com',     
       //          body: "Build sukses. Report: ${env.BUILD_URL}JMeter_20Dashboard_20(Build_20${env.BUILD_NUMBER})/"
     }
     failure {
