@@ -1,0 +1,100 @@
+pipeline {
+  agent any
+
+  options {
+    timestamps()
+    ansiColor('xterm')
+    buildDiscarder(logRotator(numToKeepStr: '20'))   // simpan 20 build terakhir
+    disableConcurrentBuilds()
+  }
+
+  parameters {
+    string(name: 'TARGET_BASE_URL', defaultValue: 'https://tst.yokke.co.id:3524', description: 'Base URL target test')
+    string(name: 'THREADS',         defaultValue: '100', description: 'Jumlah virtual users')
+    string(name: 'RAMP_UP',         defaultValue: '120', description: 'Detik untuk ramp-up')
+    string(name: 'DURATION',        defaultValue: '180', description: 'Durasi detik (Scheduler)')
+    booleanParam(name: 'SCHEDULED', defaultValue: true, description: 'Aktifkan scheduler di JMX (duration)')
+  }
+
+  environment {
+    // Ubah ke lokasi JMeter di agent Windows-mu
+    JMETER_HOME = 'D:\\TAP\\jmeter'            // berisi /bin/jmeter.bat
+    TEST_PLAN   = 'jmeter\\testplans\\IMS-project.jmx'
+    OUT_DIR     = "reports\\${env.BUILD_NUMBER}"
+    JTL_FILE    = "${env.OUT_DIR}\\results.jtl"
+    HTML_DIR    = "${env.OUT_DIR}\\html"
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Prepare') {
+      steps {
+        bat """
+        if not exist "${OUT_DIR}" mkdir "${OUT_DIR}"
+        if not exist "${HTML_DIR}" mkdir "${HTML_DIR}"
+        """
+      }
+    }
+
+    stage('Run JMeter (non-GUI)') {
+      steps {
+        // -Jprop akan dibaca di JMX via ${__P(name,default)}
+        bat """
+        call "${JMETER_HOME}\\bin\\jmeter.bat" -n ^
+          -t "${TEST_PLAN}" ^
+          -l "${JTL_FILE}" ^
+          -e -o "${HTML_DIR}" ^
+          -JbaseUrl=${params.TARGET_BASE_URL} ^
+          -Jthreads=${params.THREADS} ^
+          -Jrampup=${params.RAMP_UP} ^
+          -Jduration=${params.DURATION} ^
+          -Jschedule=${params.SCHEDULED}
+        """
+      }
+    }
+
+    stage('Archive & Publish') {
+      steps {
+        // Simpan artefak & publish HTML dashboard
+        archiveArtifacts artifacts: "${OUT_DIR}/**", fingerprint: true
+
+        publishHTML(target: [
+          allowMissing: false,
+          alwaysLinkToLastBuild: false,
+          keepAll: true,
+          reportDir: "${HTML_DIR}",
+          reportFiles: "index.html",
+          reportName: "JMeter Dashboard (Build ${env.BUILD_NUMBER})"
+        ])
+
+        // Publish ke Performance Plugin (grafik tren)
+        perfReport errorFailedThreshold: 0,
+                   errorUnstableThreshold: 0,
+                   sourceDataFiles: "${JTL_FILE}"
+      }
+    }
+  }
+
+  post {
+    always {
+      echo "Artifacts: ${env.BUILD_URL}artifact/${OUT_DIR}/"
+    }
+    success {
+      // (Opsional) email – pastikan SMTP sudah dikonfigurasi
+      // emailext subject: "OK: JMeter build #${env.BUILD_NUMBER}",
+      //          to: 'team-qa@example.com',
+      //          body: "Build sukses. Report: ${env.BUILD_URL}JMeter_20Dashboard_20(Build_20${env.BUILD_NUMBER})/"
+    }
+    failure {
+      // emailext subject: "FAILED: JMeter build #${env.BUILD_NUMBER}",
+      //          to: 'team-qa@example.com',
+      //          body: "Build gagal. Lihat console log: ${env.BUILD_URL}console"
+    }
+  }
+}

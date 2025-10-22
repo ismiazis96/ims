@@ -1,0 +1,20 @@
+2025-10-22 14:21:04,432 INFO o.a.j.u.JMeterUtils: Setting Locale to en_EN
+2025-10-22 14:21:04,461 INFO o.a.j.JMeter: Loading user properties from: D:\TAP\jmeter\bin\user.properties
+2025-10-22 14:21:04,461 INFO o.a.j.JMeter: Loading system properties from: D:\TAP\jmeter\bin\system.properties
+2025-10-22 14:21:04,481 INFO o.a.j.JMeter: Copyright (c) 1998-2022 The Apache Software Foundation
+2025-10-22 14:21:04,481 INFO o.a.j.JMeter: Version 5.5
+2025-10-22 14:21:04,481 INFO o.a.j.JMeter: java.version=1.8.0_451
+2025-10-22 14:21:04,481 INFO o.a.j.JMeter: java.vm.name=Java HotSpot(TM) 64-Bit Server VM
+2025-10-22 14:21:04,481 INFO o.a.j.JMeter: os.name=Windows 11
+2025-10-22 14:21:04,481 INFO o.a.j.JMeter: os.arch=amd64
+2025-10-22 14:21:04,481 INFO o.a.j.JMeter: os.version=10.0
+2025-10-22 14:21:04,482 INFO o.a.j.JMeter: file.encoding=Cp1252
+2025-10-22 14:21:04,482 INFO o.a.j.JMeter: java.awt.headless=null
+2025-10-22 14:21:04,482 INFO o.a.j.JMeter: Max memory     =1073741824
+2025-10-22 14:21:04,482 INFO o.a.j.JMeter: Available Processors =16
+2025-10-22 14:21:04,492 INFO o.a.j.JMeter: Default Locale=English (EN)
+2025-10-22 14:21:04,492 INFO o.a.j.JMeter: JMeter  Locale=English (EN)
+2025-10-22 14:21:04,492 INFO o.a.j.JMeter: JMeterHome=D:\TAP\jmeter
+2025-10-22 14:21:04,492 INFO o.a.j.JMeter: user.dir  =D:\YOKKE\ims
+2025-10-22 14:21:04,493 INFO o.a.j.JMeter: PWD       =D:\YOKKE\ims
+2025-10-22 14:21:04,514 INFO o.a.j.JMeter: IP: 192.168.8.15 Name: DESKTOP-TFOLSDI FullName: DESKTOP-TFOLSDI
